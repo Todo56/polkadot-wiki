@@ -639,9 +639,9 @@ Sequential Phragmén and MMS are two efficient election rules that both achieve 
 
 Currently, Polkadot employs the _sequential Phragmén_ (`seqPhragmen`) method for validator and council elections. Although `seqPhramen` has a very fast runtime, it does not provide constant-factor approximation for the maximin support problem. This is due to `seqPhramen` only performing an approximate rebalancing of the distribution of stake.
 
-In contrast, `MMS` is another standard greedy algorithm that simultaneously achieves the PJR property and provides a 2-factor approximation for maximin support, although with a considerably slower runtime. This is because for a given partial solution, `MMS` computes a balanced edge weight vector for each possible augmented committee when a new candidate is added, which is computationally expensive.
+In contrast, `MMS` is another standard greedy algorithm that simultaneously achieves the PJR property and provides a constant factor approximation for maximin support, although with a considerably slower runtime. This is because for a given partial solution, `MMS` computes a balanced edge weight vector for each possible augmented committee when a new candidate is added, which is computationally expensive.
 
-We introduce a new heuristic inspired by `seqPhragmen`, `PhragMMS`, which maintains a comparable runtime to `seqPhragmen`, offers a 3.15-approximation guarantee for the maximin support objective, and satisfies PJR. This is the fastest known algorithm to achieve a constant-factor guarantee for maximin support.
+We introduce a new heuristic inspired by `seqPhragmen`, `PhragMMS`, which maintains a comparable runtime to `seqPhragmen`, offers a constant-factor approximation guarantee for the maximin support objective, and satisfies PJR. This is the fastest known algorithm to achieve a constant-factor guarantee for maximin support.
 
 `Phragmms` is an iterative greedy algorithm that starts with an empty committee and alternates between the `Phragmms` heuristic for inserting a new candidate and _rebalancing_ by replacing the weight vector with a balanced one. The main differentiator between `Phragmms` and `seqPhragmen` is that the latter only perform an approximate rebalancing. More details on _Balanced Stake Distribution_ can be found [here](#Rationale-for-Maintaining-an-Even-Distribution-of-Stake).
 
