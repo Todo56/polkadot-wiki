@@ -623,13 +623,13 @@ nominations are priority-ranked in terms of amount of stake.
 
 `Phragmms`, formerly known as `Balphragmms`, is a new election rule inspired by Phragmén and developed in-house for Polkadot. In general, election rules on blockchains is an active topic of research. This is due to the conflicting requirements for election rules and blockchains: elections are computationally expensive, but blockchains are computationally limited. Thus, this work constitutes state of the art in terms of optimization.
 
-Proportional representation is a very important property for a decentralized network to have in order to maintain a sufficient level of decentralization. At the time of writing, Polkadot and Kusama are the only blockchain networks that implement an election rule that guarantees proportional representation.
+Proportional representation is a very important property for a decentralized network to have in order to maintain a sufficient level of decentralization. While this is already provided by the currently implemented seqPhragmen, this new election rule provides the advantage of the added security guarantee described below. As far as we can tell, at the time of writing, Polkadot and Kusama are the only blockchain networks that implement an election rule that guarantees proportional representation.
 
 The security of a distributed and decentralized system such as Polkadot is directly related to the goal of avoiding _overrepresentation_ of any minority. This is a stark contrast to traditional approaches to proportional representation axioms, which typically only seek to avoid underrepresentation.
 
 This new election rule aims to achieve a constant-factor approximation guarantee for the _maximin support objective_ and the closely related _proportional justified representation_ (PJR) property.
 
-The maximin support objective is based on maximizing the support of the least-supported elected candidate, or in the case of Polkadot and Kusama, maximizing the least amount of stake backing amongst elected validators and council members. This security-based objective was first introduced in the NPoS paper in order to make it difficult for a whale’s validator nodes to be elected.
+The maximin support objective is based on maximizing the support of the least-supported elected candidate, or in the case of Polkadot and Kusama, maximizing the least amount of stake backing amongst elected validators. This security-based objective translates to a security guarantee for NPoS and makes it difficult for an adversarial whale’s validator nodes to be elected. The MMS rule, and the guarantees it provides in terms of security and proportionality, have been formalized in a [peer-reviewed paper](https://research.web3.foundation/en/latest/polkadot/NPoS/1.%20Overview.html).
 
 The PJR property considers the proportionality of the voter’s decision power. The property states that a group of voters with cohesive candidate preferences and a large enough aggregate voting strength deserve to have a number of representatives proportional to the group’s vote strength.
 
@@ -645,30 +645,17 @@ We introduce a new heuristic inspired by `seqPhragmen`, `PhragMMS`, which mainta
 
 `Phragmms` is an iterative greedy algorithm that starts with an empty committee and alternates between the `Phragmms` heuristic for inserting a new candidate and _rebalancing_ by replacing the weight vector with a balanced one. The main differentiator between `Phragmms` and `seqPhragmen` is that the latter only perform an approximate rebalancing. More details on _Balanced Stake Distribution_ can be found [here](#Rationale-for-Maintaining-an-Even-Distribution-of-Stake).
 
-The computation is executed by off-chain workers privately and separately from block production, and the validators only need to submit and verify the solutions on-chain. Observing on-chain, only one solution needs to be tracked at any given time, and a block producer can submit a new solution _(A, w)_ in the block only if the block passes all three of these checks:
+The computation is executed by off-chain workers privately and separately from block production, and the validators only need to submit and verify the solutions on-chain. Observing on-chain, only one solution needs to be tracked at any given time, and a block producer can submit a new solution in the block only if the block passes all three of these checks:
 
 1. Feasibility
 2. Balancedness
 3. Local optimality
 
-If _(A, w)_ passes the tests, then it replaces the current solution _(A', w')_ as the tentative winner. The official winning solution is declared at the end of the election window.
+If the partial solution passes the tests, then it replaces the current solution as the tentative winner. The official winning solution is declared at the end of the election window.
 
 A powerful feature of this algorithm is the fact that both its approximation guarantee for maximin support and the above checks passing can be efficiently verified in linear time. This allows for a more scalable solution for secure and proportional committee elections. `Phragmms` can be seen as a natural complication of the `seqPhragmen` algorithm, which always grants higher score values to candidates and thus inserts them with higher support values.
 
 The `Phragmms` election rule is currently being implemented on Polkadot. Once completed, it will become one of the most sophisticated election rules implemented on a blockchain. For the first time, this election rule will provide both fair representation (PJR) and security (constant-factor approximation for the maximin support objection) to a blockchain network.
-
-## Run Time Complexities
-
-- `seqPhramen`: `O(|E| * k)`
-
-- `MMS`: `O(Bal * |C| * k)`
-
-- `Phragmms`: `O(Bal * k)`, assuming `Bal = Ω(|E| * log k)`
-  - Can be further improved such that each iteration can be made to run in `O(|E| + Bal)`
-
-> `Bal` is the time complexity of computing a balanced weight vector
-> `|E|` is the set of edges that connects a finite set of voters `N` to candidates `C`
-> `k` is the target number of candidates to elect
 
 ## Algorithm
 
